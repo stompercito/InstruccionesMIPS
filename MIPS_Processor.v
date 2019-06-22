@@ -1,11 +1,11 @@
-/******************************************************************
+/**********************
 * Description
 *	This is the top-level of a MIPS processor
 * This processor is written Verilog-HDL. Also, it is synthesizable into hardware.
 * Parameter MEMORY_DEPTH configures the program memory to allocate the program to
 * be execute. If the size of the program changes, thus, MEMORY_DEPTH must change.
 * This processor was made for computer organization class at ITESO.
-******************************************************************/
+**********************/
 
 
 module MIPS_Processor
@@ -22,12 +22,12 @@ module MIPS_Processor
 	output [31:0] ALUResultOut,
 	output [31:0] PortOut
 );
-//******************************************************************/
-//******************************************************************/
+//**********************/
+//**********************/
 assign  PortOut = 0;
 
-//******************************************************************/
-//******************************************************************/
+//**********************/
+//**********************/
 // Data types to connect modules
 wire BranchNE_wire;
 wire BranchEQ_wire;
@@ -52,14 +52,15 @@ wire [31:0] ALUResult_wire;
 wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
+wire [31:0] PC_wire;
 integer ALUStatus;
 
 
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
+//**********************/
+//**********************/
+//**********************/
+//**********************/
+//**********************/
 Control
 ControlUnit
 (
@@ -68,18 +69,23 @@ ControlUnit
 	.BranchNE(BranchNE_wire),
 	.BranchEQ(BranchEQ_wire),
 	.ALUOp(ALUOp_wire),
-	.ALUSrc(ALUSrc_wire)
+	.ALUSrc(ALUSrc_wire),
 	.RegWrite(RegWrite_wire)
 );
 
+ PC_Register
+#(
+	.N(32)
+)
 
-
-
-
-
-
-
-
+//-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+ProgramCounter
+(
+	.clk(clk),
+	.reset(reset),
+	. NewPC(PC_4_wire),	
+	.PCValue(PC_wire)
+);
 
 
 ProgramMemory
@@ -102,11 +108,11 @@ PC_Puls_4
 );
 
 
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
-//******************************************************************/
+//**********************/
+//**********************/
+//**********************/
+//**********************/
+//**********************/
 Multiplexer2to1
 #(
 	.NBits(5)
