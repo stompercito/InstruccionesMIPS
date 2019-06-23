@@ -43,7 +43,7 @@ localparam SUB = 4'b0100;
 			ALUResult= A & B;
 		  OR:
 			ALUResult= A | B;
-		  NOR
+		  NOR:
 			ALUResult= ~(A|B);
 		default:
 			ALUResult= 0;
