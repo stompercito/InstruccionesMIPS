@@ -41,8 +41,8 @@ wire Zero_wire;
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
-wire [31:0] MUX_PC_wire
-wire [31:0] PC_wire
+wire [31:0] MUX_PC_wire;
+wire [31:0] PC_wire;
 wire [31:0] Instruction_wire;
 wire [31:0] ReadData1_wire;
 wire [31:0] ReadData2_wire;
@@ -52,7 +52,6 @@ wire [31:0] ALUResult_wire;
 wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
-wire [31:0] PC_wire;
 integer ALUStatus;
 
 

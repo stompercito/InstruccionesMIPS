@@ -22,7 +22,7 @@ module ALU
 	input [3:0] ALUOperation,
 	input [31:0] A,
 	input [31:0] B,
-	input [4:0] shamt
+	input [4:0] shamt,
 	output reg Zero,
 	output reg [31:0]ALUResult
 );
@@ -54,7 +54,7 @@ localparam LUI = 4'b0111;
 		  SRL:
 			ALUResult= A>>shamt;
 		  LUI:
-			ALUResult= {B[15:0], 16'h0000}
+			ALUResult= {B[15:0], 16'h0000};
 		default:
 			ALUResult= 0;
 		endcase // case(control)
