@@ -38,6 +38,7 @@ wire ORForBranch;
 wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
+wire Jump_wire;
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
@@ -52,6 +53,8 @@ wire [31:0] ALUResult_wire;
 wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
+wire [31:0] JumpOrPC4_wire;
+wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
 integer ALUStatus;
 
 
@@ -82,7 +85,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	. NewPC(PC_4_wire),	
+	.NewPC(JumpOrPC4_wire),	
 	.PCValue(PC_wire)
 );
 
@@ -106,6 +109,35 @@ PC_Puls_4
 	.Result(PC_4_wire)
 );
 
+ShiftLeft2
+JumpShifter
+(   
+	.DataInput({6'b0,Instruction_wire[25:0]}),
+   .DataOutput(JumpAddrSh2_wire)
+);
+
+Adder32bits
+PC_Puls_4
+(
+	.Data0(PC_4_wire),
+	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[28:0]}),
+	
+	.Result(PC_4_wire)
+);
+
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MUX_ForJump
+(
+	.Selector(RegDst_wire),
+	.MUX_Data0(PC_4_wire),
+	.MUX_Data1(),
+	
+	.MUX_Output(JumpOrPC4_wire)
+
+);
 
 //**********************/
 //**********************/
