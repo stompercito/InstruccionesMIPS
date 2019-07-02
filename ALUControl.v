@@ -1,6 +1,6 @@
 /******************************************************************
 * Description
-*	This is the control unit for the ALU. It receves an signal called 
+*	This is the control unit for the ALU. It receves an signal called
 *	ALUOp from the control unit and a signal called ALUFunction from
 *	the intrctuion field named function.
 * Version:
@@ -29,7 +29,6 @@ localparam R_Type_SRL	 		= 9'b111_000010;
 localparam I_Type_ADDI  		= 9'b100_xxxxxx;
 localparam I_Type_ORI    		= 9'b101_xxxxxx;
 localparam I_Type_ANDI   		= 9'b110_xxxxxx;
-localparam I_Type_LUI 	 		= 9'b111_xxxxxx;
 localparam I_Type_BEQandBNE: 	= 9'b001_xxxxxx;
 
 
@@ -51,8 +50,7 @@ always@(Selector)begin
 		I_Type_ADDI:			ALUControlValues = 4'b0011;
 		I_Type_ORI:				ALUControlValues = 4'b0001;
 		I_Type_ANDI:   		ALUControlValues = 4'b0000;
-		I_Type_LUI:				ALUControlValues = 4'b0111;
-		I_Type_BEQandBNE:		ALUControlValues = 4'b0100;
+				I_Type_BEQandBNE:		ALUControlValues = 4'b0100;
 		default: ALUControlValues = 4'b1001;
 	endcase
 end
