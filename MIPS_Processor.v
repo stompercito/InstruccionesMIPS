@@ -44,7 +44,10 @@ wire JR_wire;
 wire JOrPC4OrBranchOrJR_wire;
 wire JumpOrPC4OrBranch_wire;
 wire RegWriteORJAL_wire;
-wire [2:0] ALUOp_wire;
+wire MemRead_wire;
+wire MemWrite_wire;
+wire MemtoReg_wire;
+wire [3:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
 wire [31:0] MUX_PC_wire;
@@ -64,6 +67,9 @@ wire [31:0] BranchAddrSh2_wire	//Branch address shifted 2 bits
 wire [31:0] Link_wire;
 wire [31:0] JumpAddr;
 wire [31:0] BranchToPC_wire;
+wire [31:0] MemOut_wire;
+wire [31:0] MemOrAlu_wire;
+wire [31:0] LinkOrWord_wire;
 integer ALUStatus;
 
 
@@ -107,6 +113,15 @@ Gate_BeqOrBNE
 	.C(ORForBranch)
 );
 
+ORGate
+Gate_RegWrORJAL
+(
+	.A(RegWrite_wire)
+	.B(JAL_wire)
+	.C(RegWriteORJAL_wire )
+);
+
+
 //**********************/
 Control
 ControlUnit
@@ -119,7 +134,10 @@ ControlUnit
 	.ALUSrc(ALUSrc_wire),
 	.RegWrite(RegWrite_wire),
 	.Jump(Jump_wire)
-);
+	.MemRead(MemRead_wire),
+	.MemtoReg(MemtoReg_wire),
+	.MemWrite(MemWrite_wire),
+	);
 
  PC_Register
 #(
@@ -282,7 +300,7 @@ MUX_ForJalorRorIType
 	.MUX_Output(RAorWriteReg_wire)
 
 );
-assign RegWriteORJAL_wire = RegWrite_wire | JAL_wire;
+
 
 
 RegisterFile
@@ -345,6 +363,51 @@ Arithmetic_Logic_Unit
 	.Zero(Zero_wire),
 	.ALUResult(ALUResult_wire)
 );
+
+
+DataMemory
+Memory
+(
+	.WriteData(ALUResult_wire),
+	.Address(ALUResult_wire),
+	.MemWrite(MemWrite_wire),
+	.MemRead(MemRead_wire),
+	.clk(clk),
+	.ReadData(MemOut_wire)
+);
+
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MUX_MemtoReg
+(
+	.Selector(MemtoReg_wire),
+	.MUX_Data0(ALUResult_wire),
+	.MUX_Data1(MemOut_wire),
+
+	.MUX_Output(MemOrAlu_wire)
+
+);
+
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MUX_MemtoReg
+(
+	.Selector(MemtoReg_wire),
+	.MUX_Data0(Link_wire),
+	.MUX_Data1(MemOrAlu_wire),
+
+	.MUX_Output(LinkOrWord_wire)
+
+);
+
+
+
+
+
 
 assign ALUResultOut = ALUResult_wire;
 

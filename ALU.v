@@ -34,8 +34,7 @@ localparam ADD = 4'b0011;
 localparam SUB = 4'b0100;
 localparam SLL = 4'b0101;
 localparam SRL = 4'b0110;
-localparam LW:		ALUControlValues = 4'b0111;
-localparam SW:		ALUControlValues = 4'b1000;
+localparam LUI = 4'b0111;
 
    always @ (A or B or ALUOperation)
      begin
@@ -54,6 +53,8 @@ localparam SW:		ALUControlValues = 4'b1000;
 			ALUResult= A<<shamt;
 		  SRL:
 			ALUResult= A>>shamt;
+		  LUI:
+			ALUResult= {B[15:0], 16'b0};
 		default:
 			ALUResult= 0;
 		endcase // case(control)
