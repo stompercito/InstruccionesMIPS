@@ -59,6 +59,7 @@ wire [31:0] BranchOrPC4_wire;
 wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
 wire [31:0] BranchAddrSh2_wire	//Branch address shifted 2 bits
 wire [31:0] Link_wire;
+wire [31:0] JumpAddr;
 integer ALUStatus;
 
 
@@ -159,7 +160,7 @@ PC_Puls_4
 	.Data0(PC_4_wire),
 	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[28:0]}),
 
-	.Result(PC_4_wire)
+	.Result(JumpAddr)
 );
 
 //-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
@@ -205,7 +206,7 @@ MUX_ForJump
 (
 	.Selector(Jump_wire),
 	.MUX_Data0(BranchOrPC4_wire),
-	.MUX_Data1(Instruction_wire[25:0]),
+	.MUX_Data1(JumpAddr),
 
 	.MUX_Output(JumpOrPC4OrBranch_wire)
 
