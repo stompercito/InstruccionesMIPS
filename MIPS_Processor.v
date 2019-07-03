@@ -54,9 +54,10 @@ wire [31:0] ReadData2OrInmmediate_wire;
 wire [31:0] ALUResult_wire;
 wire [31:0] PC_4_wire;
 wire [31:0] InmmediateExtendAnded_wire;
-wire [31:0] PCtoBranch_wire;
-wire [31:0] JumpOrPC4_wire;
+wire [31:0] JumpOrPC4OrBranch_wire;
+wire [31:0] BranchOrPC4_wire;
 wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
+wire [31:0] BranchAddrSh2_wire	//Branch address shifted 2 bits
 wire [31:0] Link_wire;
 integer ALUStatus;
 
@@ -72,8 +73,29 @@ Gate_JumpANDLeast
 );
 
 //**********************/
+
+ANDGate
+Gate_BranchEQANDZero
+(
+	.A(BranchEQ_wire)
+	.B(zero) //bit menos significativo del opcode porque J 000010 y JAL 000011
+	.C(ZeroANDBrachEQ)
+);
+
 //**********************/
+
+ANDGate
+Gate_BranchNEANDZero
+(
+	.A(BranchNE_wire)
+	.B(!zero) //Si zero es diferente de 1,, significa que es diferente
+	.C(NotZeroANDBrachNE)
+);
+
 //**********************/
+
+//Crear OR Gate (Nuevo modulo)
+
 //**********************/
 Control
 ControlUnit
@@ -98,7 +120,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	.NewPC(JumpOrPC4_wire),	
+	.NewPC(JumpOrPC4OrBranch_wire),
 	.PCValue(PC_wire)
 );
 
@@ -118,13 +140,15 @@ PC_Puls_4
 (
 	.Data0(PC_wire),
 	.Data1(4),
-	
+
 	.Result(PC_4_wire)
 );
 
+//-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
 ShiftLeft2
 JumpShifter
-(   
+(
 	.DataInput({6'b0,Instruction_wire[25:0]}),
    .DataOutput(JumpAddrSh2_wire)
 );
@@ -134,10 +158,43 @@ PC_Puls_4
 (
 	.Data0(PC_4_wire),
 	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[28:0]}),
-	
+
 	.Result(PC_4_wire)
 );
 
+//-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+ShiftLeft2
+BranchShifter
+(
+	 .DataInput({6'b0,InmmediateExtend_wire[15:0]}),
+   .DataOutput(BranchAddrSh2_wire)
+);
+
+Adder32bits
+PC_Puls_4
+(
+	.Data0(PC_4_wire),
+	.Data1({PC_4_wire[31:28], BranchAddrSh2_wire[28:0]}),
+
+	.Result(PC_4_wire)
+);
+
+//-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MUX_ForBranch
+(
+	.Selector(ORForBranch),
+	.MUX_Data0(PC_4_wire),
+	.MUX_Data1(Instruction_wire[15:0]),
+
+	.MUX_Output(BranchOrPC4_wire)
+
+);
 
 
 Multiplexer2to1
@@ -147,13 +204,12 @@ Multiplexer2to1
 MUX_ForJump
 (
 	.Selector(Jump_wire),
-	.MUX_Data0(PC_4_wire),
+	.MUX_Data0(BranchOrPC4_wire),
 	.MUX_Data1(Instruction_wire[25:0]),
-	
-	.MUX_Output(JumpOrPC4_wire)
+
+	.MUX_Output(JumpOrPC4OrBranch_wire)
 
 );
-
 
 
 //**********************/
@@ -170,7 +226,7 @@ MUX_ForRTypeAndIType
 	.Selector(RegDst_wire),
 	.MUX_Data0(Instruction_wire[20:16]),
 	.MUX_Data1(Instruction_wire[15:11]),
-	
+
 	.MUX_Output(WriteRegister_wire)
 
 );
@@ -184,7 +240,7 @@ MUX_ForLink
 	.Selector(JAL_wire),
 	.MUX_Data0(ALUResult_wire),
 	.MUX_Data1(PC_4_wire),
-	
+
 	.MUX_Output(Link_wire)
 
 );
@@ -198,7 +254,7 @@ MUX_ForJalorRorIType
 	.Selector(JAL_wire),
 	.MUX_Data0(WriteRegister_wire),
 	.MUX_Data1(31),
-	
+
 	.MUX_Output(RAorWriteReg_wire)
 
 );
@@ -222,7 +278,7 @@ Register_File
 
 SignExtend
 SignExtendForConstants
-(   
+(
 	.DataInput(Instruction_wire[15:0]),
    .SignExtendOutput(InmmediateExtend_wire)
 );
@@ -238,7 +294,7 @@ MUX_ForReadDataAndInmediate
 	.Selector(ALUSrc_wire),
 	.MUX_Data0(ReadData2_wire),
 	.MUX_Data1(InmmediateExtend_wire),
-	
+
 	.MUX_Output(ReadData2OrInmmediate_wire)
 
 );
@@ -256,7 +312,7 @@ ArithmeticLogicUnitControl
 
 
 ALU
-Arithmetic_Logic_Unit 
+Arithmetic_Logic_Unit
 (
 	.ALUOperation(ALUOperation_wire),
 	.A(ReadData1_wire),
@@ -270,4 +326,3 @@ assign ALUResultOut = ALUResult_wire;
 
 
 endmodule
-
