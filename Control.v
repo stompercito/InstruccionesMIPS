@@ -31,6 +31,8 @@ localparam I_Type_ORI = 6'h0d;
 localparam I_Type_ANDI = 6'h0c;
 localparam I_Type_BEQ = 6'h04;
 localparam I_Type_BNE = 6'h05;
+localparam I_Type_LW = 6'h23;
+localparam I_Type_SW = 6'h2b;
 localparam J_Type	= 6'b00001x;
 
 
@@ -44,7 +46,9 @@ always@(OP) begin
 		I_Type_ANDI:			ControlValues= 11'b00_101_00_00_110;
 		I_Type_BEQ:				ControlValues= 11'b00_000_00_01_001;
 		I_Type_BNE:				ControlValues= 11'b00_000_00_10_001;
-		J_Type:					ControlValues= 12'b10_000_00_00_000;
+		I_Type_LW: 				ControlValues= 11'b00_101_10_00_010;
+		I_Type_SW: 				ControlValues= 11'b00_000_01_10_011;
+		J_Type:						ControlValues= 12'b10_000_00_00_000;
 		default:
 			ControlValues= 12'b000000000000;
 		endcase

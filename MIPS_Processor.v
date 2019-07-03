@@ -96,7 +96,13 @@ Gate_BranchNEANDZero
 
 //**********************/
 
-//Crear OR Gate (Nuevo modulo)
+ORGate
+Gate_BeqOrBNE
+(
+	.A(NotZeroANDBrachNE)
+	.B(ZeroANDBrachEQ)
+	.C(ORForBranch)
+);
 
 //**********************/
 Control

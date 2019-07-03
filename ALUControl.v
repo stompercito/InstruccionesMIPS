@@ -30,6 +30,8 @@ localparam I_Type_ADDI  		= 9'b100_xxxxxx;
 localparam I_Type_ORI    		= 9'b101_xxxxxx;
 localparam I_Type_ANDI   		= 9'b110_xxxxxx;
 localparam I_Type_BEQandBNE: 	= 9'b001_xxxxxx;
+localparam I_Type_LW:					= 9'b010_xxxxxx;
+localparam I_Type_SW:					= 9'b011_xxxxxx;
 
 
 
@@ -50,7 +52,9 @@ always@(Selector)begin
 		I_Type_ADDI:			ALUControlValues = 4'b0011;
 		I_Type_ORI:				ALUControlValues = 4'b0001;
 		I_Type_ANDI:   		ALUControlValues = 4'b0000;
-				I_Type_BEQandBNE:		ALUControlValues = 4'b0100;
+		I_Type_BEQandBNE:		ALUControlValues = 4'b0100;
+		I_Type_LW:		ALUControlValues = 4'b0111;
+		I_Type_SW:		ALUControlValues = 4'b1000;
 		default: ALUControlValues = 4'b1001;
 	endcase
 end

@@ -17,7 +17,7 @@
 *	01/03/2014
 ******************************************************************/
 
-module ALU 
+module ALU
 (
 	input [3:0] ALUOperation,
 	input [31:0] A,
@@ -34,7 +34,9 @@ localparam ADD = 4'b0011;
 localparam SUB = 4'b0100;
 localparam SLL = 4'b0101;
 localparam SRL = 4'b0110;
-   
+localparam LW:		ALUControlValues = 4'b0111;
+localparam SW:		ALUControlValues = 4'b1000;
+
    always @ (A or B or ALUOperation)
      begin
 		case (ALUOperation)
@@ -57,5 +59,5 @@ localparam SRL = 4'b0110;
 		endcase // case(control)
 		Zero = (ALUResult==0) ? 1'b1 : 1'b0;
      end // always @ (A or B or control)
-endmodule 
+endmodule
 // alu//
