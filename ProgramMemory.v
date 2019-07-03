@@ -1,7 +1,7 @@
 /******************************************************************
 * Description
-*	This is  a ROM memory that represents the program memory. 
-* 	Internally, the memory is read without a signal clock. The initial 
+*	This is  a ROM memory that represents the program memory.
+* 	Internally, the memory is read without a signal clock. The initial
 *	values (program) of this memory are written from a file named text.dat.
 * Version:
 *	1.0
@@ -31,7 +31,7 @@ assign RealAddress = {2'b0,Address[(DATA_WIDTH-1):2]};
 
 	initial
 	begin
-		$readmemh("C:/text.dat", rom);
+		$readmemh("C:/Users/stomp/Desktop/Practica 2/text.dat", rom);
 	end
 
 	always @ (RealAddress)

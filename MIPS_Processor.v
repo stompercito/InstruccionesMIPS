@@ -308,11 +308,11 @@ Register_File
 (
 	.clk(clk),
 	.reset(reset),
-	.RegWrite(RegWriteORJAL_wire),
-	.WriteRegister(RAorWriteReg_wire),
+	.RegWrite(RegWrite_wire),
+	.WriteRegister(WriteRegister_wire),
 	.ReadRegister1(Instruction_wire[25:21]),
 	.ReadRegister2(Instruction_wire[20:16]),
-	.WriteData(Link_wire),
+	.WriteData(MemOrAlu_wire),
 	.ReadData1(ReadData1_wire),
 	.ReadData2(ReadData2_wire)
 
@@ -403,10 +403,6 @@ MUX_MemorLink
 	.MUX_Output(LinkOrWord_wire)
 
 );
-
-
-
-
 
 
 assign ALUResultOut = ALUResult_wire;
