@@ -39,6 +39,8 @@ wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
 wire Jump_wire;
+wire JAL_wire;
+wire RegWriteORJAL_wire
 wire [2:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
@@ -55,10 +57,20 @@ wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] PCtoBranch_wire;
 wire [31:0] JumpOrPC4_wire;
 wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
+wire [31:0] Link_wire;
 integer ALUStatus;
 
 
 //**********************/
+
+ANDGate
+Gate_JumpANDLeast
+(
+	.A(Jump_wire)
+	.B(Instruction_wire[26]) //bit menos significativo del opcode porque J 000010 y JAL 000011
+	.C(JAL_wire)
+);
+
 //**********************/
 //**********************/
 //**********************/
@@ -72,7 +84,8 @@ ControlUnit
 	.BranchEQ(BranchEQ_wire),
 	.ALUOp(ALUOp_wire),
 	.ALUSrc(ALUSrc_wire),
-	.RegWrite(RegWrite_wire)
+	.RegWrite(RegWrite_wire),
+	.Jump(Jump_wire)
 );
 
  PC_Register
@@ -125,19 +138,23 @@ PC_Puls_4
 	.Result(PC_4_wire)
 );
 
+
+
 Multiplexer2to1
 #(
 	.NBits(32)
 )
 MUX_ForJump
 (
-	.Selector(RegDst_wire),
+	.Selector(Jump_wire),
 	.MUX_Data0(PC_4_wire),
-	.MUX_Data1(),
+	.MUX_Data1(Instruction_wire[25:0]),
 	
 	.MUX_Output(JumpOrPC4_wire)
 
 );
+
+
 
 //**********************/
 //**********************/
@@ -158,6 +175,34 @@ MUX_ForRTypeAndIType
 
 );
 
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MUX_ForLink
+(
+	.Selector(JAL_wire),
+	.MUX_Data0(ALUResult_wire),
+	.MUX_Data1(PC_4_wire),
+	
+	.MUX_Output(Link_wire)
+
+);
+
+Multiplexer2to1
+#(
+	.NBits(5)
+)
+MUX_ForJalorRorIType
+(
+	.Selector(JAL_wire),
+	.MUX_Data0(WriteRegister_wire),
+	.MUX_Data1(31),
+	
+	.MUX_Output(RAorWriteReg_wire)
+
+);
+assign RegWriteORJAL_wire = RegWrite_wire | JAL_wire;
 
 
 RegisterFile
@@ -165,11 +210,11 @@ Register_File
 (
 	.clk(clk),
 	.reset(reset),
-	.RegWrite(RegWrite_wire),
-	.WriteRegister(WriteRegister_wire),
+	.RegWrite(RegWriteORJAL_wire),
+	.WriteRegister(RAorWriteReg_wire),
 	.ReadRegister1(Instruction_wire[25:21]),
 	.ReadRegister2(Instruction_wire[20:16]),
-	.WriteData(ALUResult_wire),
+	.WriteData(Link_wire),
 	.ReadData1(ReadData1_wire),
 	.ReadData2(ReadData2_wire)
 

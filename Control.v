@@ -14,7 +14,7 @@
 module Control
 (
 	input [5:0]OP,
-	output jump,
+	output Jump,
 	output RegDst,
 	output BranchEQ,
 	output BranchNE,
@@ -31,24 +31,25 @@ localparam I_Type_ORI = 6'h0d;
 localparam I_Type_ANDI = 6'h0c;
 localparam I_Type_BEQ = 6'h04;
 localparam I_Type_BNE = 6'h05;
-localparam J_Type_J	= 6'02;
+localparam J_Type	= 6'b00001x;
 
 
 reg [10:0] ControlValues;
 
 always@(OP) begin
 	casex(OP)
-		R_Type:        		ControlValues= 11'b1_001_00_00_111;
-		I_Type_ADDI:   		ControlValues= 11'b0_101_00_00_100;
-		I_Type_ORI:    		ControlValues= 11'b0_101_00_00_101;
-		I_Type_ANDI:			ControlValues= 11'b0_101_00_00_110;
-		I_Type_BEQ:		ControlValues= 11'b0_000_00_01_001;
-		I_Type_BNE:		ControlValues= 11'b0_000_00_10_001;
-		J_Type_J:		ControlValues= 12'b1_0_000_00_00_000;
+		R_Type:        		ControlValues= 11'b01_001_00_00_111;
+		I_Type_ADDI:   		ControlValues= 11'b00_101_00_00_100;
+		I_Type_ORI:    		ControlValues= 11'b00_101_00_00_101;
+		I_Type_ANDI:			ControlValues= 11'b00_101_00_00_110;
+		I_Type_BEQ:				ControlValues= 11'b00_000_00_01_001;
+		I_Type_BNE:				ControlValues= 11'b00_000_00_10_001;
+		J_Type:					ControlValues= 12'b10_000_00_00_000;
 		default:
 			ControlValues= 12'b000000000000;
 		endcase
 end
+
 
 assign RegDst = ControlValues[10];
 assign ALUSrc = ControlValues[9];
@@ -59,6 +60,7 @@ assign MemWrite = ControlValues[5];
 assign BranchNE = ControlValues[4];
 assign BranchEQ = ControlValues[3];
 assign ALUOp = ControlValues[2:0];
+assign Jump = ControlValues[11];
 
 endmodule
 //control//
