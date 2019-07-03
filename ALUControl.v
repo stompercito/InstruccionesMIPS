@@ -31,10 +31,10 @@ localparam R_Type_JR				= 10'b0111_000100;
 localparam I_Type_ADDI  		= 10'b0100_xxxxxx;
 localparam I_Type_ORI    		= 10'b0101_xxxxxx;
 localparam I_Type_ANDI   		= 10'b0110_xxxxxx;
-localparam I_Type_BEQandBNE: 	= 10'b0001_xxxxxx;
-localparam I_Type_LW:			= 10'b0010_xxxxxx;
-localparam I_Type_SW:			= 10'b0011_xxxxxx;
-localparam I_Type_LUI:			= 10'b1000_xxxxxx;
+localparam I_Type_BEQandBNE 	= 10'b0001_xxxxxx;
+localparam I_Type_LW				= 10'b0010_xxxxxx;
+localparam I_Type_SW				= 10'b0011_xxxxxx;
+localparam I_Type_LUI			= 10'b1000_xxxxxx;
 
 
 

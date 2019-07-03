@@ -41,8 +41,6 @@ wire Zero_wire;
 wire Jump_wire;
 wire JAL_wire;
 wire JR_wire;
-wire JOrPC4OrBranchOrJR_wire;
-wire JumpOrPC4OrBranch_wire;
 wire RegWriteORJAL_wire;
 wire MemRead_wire;
 wire MemWrite_wire;
@@ -50,6 +48,8 @@ wire MemtoReg_wire;
 wire [3:0] ALUOp_wire;
 wire [3:0] ALUOperation_wire;
 wire [4:0] WriteRegister_wire;
+wire [4:0] RAorWriteReg_wire;
+wire [31:0] JOrPC4OrBranchOrJR_wire;
 wire [31:0] MUX_PC_wire;
 wire [31:0] PC_wire;
 wire [31:0] Instruction_wire;
@@ -63,7 +63,7 @@ wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] JumpOrPC4OrBranch_wire;
 wire [31:0] BranchOrPC4_wire;
 wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
-wire [31:0] BranchAddrSh2_wire	//Branch address shifted 2 bits
+wire [31:0] BranchAddrSh2_wire;	//Branch address shifted 2 bits
 wire [31:0] Link_wire;
 wire [31:0] JumpAddr;
 wire [31:0] BranchToPC_wire;
@@ -78,8 +78,8 @@ integer ALUStatus;
 ANDGate
 Gate_JumpANDLeast
 (
-	.A(Jump_wire)
-	.B(Instruction_wire[26]) //bit menos significativo del opcode porque J 000010 y JAL 000011
+	.A(Jump_wire),
+	.B(Instruction_wire[26]), //bit menos significativo del opcode porque J 000010 y JAL 000011
 	.C(JAL_wire)
 );
 
@@ -88,8 +88,8 @@ Gate_JumpANDLeast
 ANDGate
 Gate_BranchEQANDZero
 (
-	.A(BranchEQ_wire)
-	.B(zero) //bit menos significativo del opcode porque J 000010 y JAL 000011
+	.A(BranchEQ_wire),
+	.B(Zero_wire), //bit menos significativo del opcode porque J 000010 y JAL 000011
 	.C(ZeroANDBrachEQ)
 );
 
@@ -98,8 +98,8 @@ Gate_BranchEQANDZero
 ANDGate
 Gate_BranchNEANDZero
 (
-	.A(BranchNE_wire)
-	.B(!zero) //Si zero es diferente de 1,, significa que es diferente
+	.A(BranchNE_wire),
+	.B(!Zero_wire), //Si zero es diferente de 1,, significa que es diferente
 	.C(NotZeroANDBrachNE)
 );
 
@@ -108,16 +108,16 @@ Gate_BranchNEANDZero
 ORGate
 Gate_BeqOrBNE
 (
-	.A(NotZeroANDBrachNE)
-	.B(ZeroANDBrachEQ)
+	.A(NotZeroANDBrachNE),
+	.B(ZeroANDBrachEQ),
 	.C(ORForBranch)
 );
 
 ORGate
 Gate_RegWrORJAL
 (
-	.A(RegWrite_wire)
-	.B(JAL_wire)
+	.A(RegWrite_wire),
+	.B(JAL_wire),
 	.C(RegWriteORJAL_wire )
 );
 
@@ -133,10 +133,10 @@ ControlUnit
 	.ALUOp(ALUOp_wire),
 	.ALUSrc(ALUSrc_wire),
 	.RegWrite(RegWrite_wire),
-	.Jump(Jump_wire)
+	.Jump(Jump_wire),
 	.MemRead(MemRead_wire),
 	.MemtoReg(MemtoReg_wire),
-	.MemWrite(MemWrite_wire),
+	.MemWrite(MemWrite_wire)
 	);
 
  PC_Register
@@ -183,7 +183,7 @@ JumpShifter
 );
 
 Adder32bits
-PC_Puls_4
+JumpAddr_plus_PC_4
 (
 	.Data0(PC_4_wire),
 	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[28:0]}),
@@ -201,7 +201,7 @@ BranchShifter
 );
 
 Adder32bits
-PC_Puls_4
+BranchAddr_4
 (
 	.Data0(PC_4_wire),
 	.Data1({PC_4_wire[31:28], BranchAddrSh2_wire[28:0]}),
@@ -394,7 +394,7 @@ Multiplexer2to1
 #(
 	.NBits(32)
 )
-MUX_MemtoReg
+MUX_MemorLink
 (
 	.Selector(MemtoReg_wire),
 	.MUX_Data0(Link_wire),

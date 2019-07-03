@@ -34,9 +34,9 @@ localparam I_Type_BNE = 6'h05;
 localparam I_Type_LW = 6'h23;
 localparam I_Type_SW = 6'h2b;
 localparam J_Type	= 6'b00001x;
+localparam I_Type_LUI = 6'h0f;
 
-
-reg [10:0] ControlValues;
+reg [12:0] ControlValues;
 
 always@(OP) begin
 	casex(OP)
