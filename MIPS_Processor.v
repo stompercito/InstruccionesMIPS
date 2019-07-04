@@ -347,6 +347,9 @@ Arithmetic_Logic_Unit
 
 
 DataMemory
+#(
+	.DATA_WIDTH(32)
+)
 Memory
 (
 	.WriteData(ReadData2_wire),
