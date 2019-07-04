@@ -166,7 +166,7 @@ JumpShifter
 Adder32bits
 JumpAddr_4
 (
-	.Data0(PC_4_wire),
+	.Data0(32'hFFFC0000), //complemento a 2 de 00400000 para 
 	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[27:0]}),
 
 	.Result(JumpAddr)
