@@ -39,7 +39,6 @@ wire ALUSrc_wire;
 wire RegWrite_wire;
 wire Zero_wire;
 wire Jump_wire;
-wire JAL_wire;
 wire JR_wire;
 wire RegWriteORJAL_wire;
 wire MemRead_wire;
@@ -64,7 +63,7 @@ wire [31:0] JumpOrPC4OrBranch_wire;
 wire [31:0] BranchOrPC4_wire;
 wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
 wire [31:0] BranchAddrSh2_wire;	//Branch address shifted 2 bits
-wire [31:0] Link_wire;
+wire [31:0] JAL_Address_or_ALU_Result_wire;
 wire [31:0] JumpAddr;
 wire [31:0] BranchToPC_wire;
 wire [31:0] MemOut_wire;
@@ -74,15 +73,6 @@ integer ALUStatus;
 
 
 //**********************/
-
-ANDGate
-Gate_JumpANDLeast
-(
-	.A(Jump_wire),
-	.B(Instruction_wire[26]), //bit menos significativo del opcode porque J 000010 y JAL 000011
-	.C(JAL_wire)
-);
-
 //**********************/
 
 ANDGate
@@ -112,15 +102,6 @@ Gate_BeqOrBNE
 	.B(ZeroANDBrachEQ),
 	.C(ORForBranch)
 );
-
-ORGate
-Gate_RegWrORJAL
-(
-	.A(RegWrite_wire),
-	.B(JAL_wire),
-	.C(RegWriteORJAL_wire )
-);
-
 
 //**********************/
 Control
@@ -183,7 +164,7 @@ JumpShifter
 );
 
 Adder32bits
-JumpAddr_plus_PC_4
+JumpAddr_4
 (
 	.Data0(PC_4_wire),
 	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[28:0]}),
@@ -277,13 +258,13 @@ Multiplexer2to1
 #(
 	.NBits(32)
 )
-MUX_ForLink
+MUX_JAL_address_Or_ALU_Result
 (
-	.Selector(JAL_wire),
-	.MUX_Data0(ALUResult_wire),
-	.MUX_Data1(PC_4_wire),
+	.Selector(Jump_wire),
+	.MUX_Data0(MemOrAlu_wire),
+	.MUX_Data1(JumpAddr),
 
-	.MUX_Output(Link_wire)
+	.MUX_Output(JAL_Address_or_ALU_Result_wire)
 
 );
 
@@ -293,9 +274,9 @@ Multiplexer2to1
 )
 MUX_ForJalorRorIType
 (
-	.Selector(JAL_wire),
+	.Selector(Jump_wire),
 	.MUX_Data0(WriteRegister_wire),
-	.MUX_Data1(31),
+	.MUX_Data1(5'b11111),
 
 	.MUX_Output(RAorWriteReg_wire)
 
@@ -309,10 +290,10 @@ Register_File
 	.clk(clk),
 	.reset(reset),
 	.RegWrite(RegWrite_wire),
-	.WriteRegister(WriteRegister_wire),
+	.WriteRegister(RAorWriteReg_wire),
 	.ReadRegister1(Instruction_wire[25:21]),
 	.ReadRegister2(Instruction_wire[20:16]),
-	.WriteData(MemOrAlu_wire),
+	.WriteData(JAL_Address_or_ALU_Result_wire),
 	.ReadData1(ReadData1_wire),
 	.ReadData2(ReadData2_wire)
 
@@ -389,21 +370,6 @@ MUX_MemtoReg
 	.MUX_Output(MemOrAlu_wire)
 
 );
-
-Multiplexer2to1
-#(
-	.NBits(32)
-)
-MUX_MemorLink
-(
-	.Selector(MemtoReg_wire),
-	.MUX_Data0(Link_wire),
-	.MUX_Data1(MemOrAlu_wire),
-
-	.MUX_Output(LinkOrWord_wire)
-
-);
-
 
 assign ALUResultOut = ALUResult_wire;
 

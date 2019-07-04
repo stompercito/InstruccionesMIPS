@@ -33,7 +33,8 @@ localparam I_Type_BEQ = 6'h04;
 localparam I_Type_BNE = 6'h05;
 localparam I_Type_LW = 6'h23;
 localparam I_Type_SW = 6'h2b;
-localparam J_Type	= 6'b00001x;
+localparam J_Type_J	= 6'h02;
+localparam J_Type_JAL	= 6'h03;
 localparam I_Type_LUI = 6'h0f;
 
 reg [12:0] ControlValues;
@@ -49,7 +50,8 @@ always@(OP) begin
 		I_Type_LW: 				ControlValues= 13'b00_111_10_00_0010;
 		I_Type_SW: 				ControlValues= 13'b00_100_01_00_0011;
 		I_Type_LUI:				ControlValues= 13'b00_101_00_00_1000;
-		J_Type:					ControlValues= 13'b10_000_00_00_0000;
+		J_Type_J:					ControlValues= 13'b10_000_00_00_0000;
+		J_Type_JAL:					ControlValues= 13'b10_001_00_00_0000;
 		default:
 			ControlValues= 13'b000000000000;
 		endcase
