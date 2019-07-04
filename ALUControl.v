@@ -39,7 +39,7 @@ localparam I_Type_LUI			= 10'b1000_xxxxxx;
 
 
 reg [3:0] ALUControlValues;
-wire [8:0] Selector;
+wire [9:0] Selector;
 
 assign Selector = {ALUOp, ALUFunction};
 
