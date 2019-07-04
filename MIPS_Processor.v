@@ -130,7 +130,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	.NewPC(JOrPC4OrBranchOrJR_wire),
+	.NewPC(JumpOrPC4OrBranch_wire),
 	.PCValue(PC_wire)
 );
 
@@ -167,7 +167,7 @@ Adder32bits
 JumpAddr_4
 (
 	.Data0(PC_4_wire),
-	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[28:0]}),
+	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[27:0]}),
 
 	.Result(JumpAddr)
 );
@@ -177,7 +177,7 @@ JumpAddr_4
 ShiftLeft2
 BranchShifter
 (
-	 .DataInput({6'b0,InmmediateExtend_wire[15:0]}),
+	 .DataInput({6'b0,InmmediateExtend_wire[15:0]}),  ////{6'b0,InmmediateExtend_wire[15:0]
    .DataOutput(BranchAddrSh2_wire)
 );
 
@@ -185,7 +185,7 @@ Adder32bits
 BranchAddr_4
 (
 	.Data0(PC_4_wire),
-	.Data1({PC_4_wire[31:28], BranchAddrSh2_wire[28:0]}),
+	.Data1({PC_4_wire[31:28], BranchAddrSh2_wire[27:0]}),
 
 	.Result(BranchToPC_wire)
 );
