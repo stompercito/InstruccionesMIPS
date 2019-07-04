@@ -50,9 +50,9 @@ localparam LUI = 4'b0111;
 		  NOR:
 			ALUResult= ~(A|B);
 		  SLL:
-			ALUResult= A<<shamt;
+			ALUResult= B<<shamt;
 		  SRL:
-			ALUResult= A>>shamt;
+			ALUResult= B>>shamt;
 		  LUI:
 			ALUResult= {B[15:0], 16'b0};
 		default:
