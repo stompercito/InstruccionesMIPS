@@ -368,7 +368,7 @@ Arithmetic_Logic_Unit
 DataMemory
 Memory
 (
-	.WriteData(ALUResult_wire),
+	.WriteData(ReadData2_wire),
 	.Address(ALUResult_wire),
 	.MemWrite(MemWrite_wire),
 	.MemRead(MemRead_wire),
@@ -403,6 +403,8 @@ MUX_MemorLink
 	.MUX_Output(LinkOrWord_wire)
 
 );
+
+
 
 
 assign ALUResultOut = ALUResult_wire;
