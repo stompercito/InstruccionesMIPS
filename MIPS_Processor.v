@@ -130,7 +130,7 @@ ProgramCounter
 (
 	.clk(clk),
 	.reset(reset),
-	.NewPC(JumpOrPC4OrBranch_wire),
+	.NewPC(JOrPC4OrBranchOrJR_wire),
 	.PCValue(PC_wire)
 );
 
@@ -191,6 +191,24 @@ BranchAddr_4
 );
 
 //-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+ShiftLeft2
+JRShifter
+(
+	 .DataInput(ReadData1_wire),
+   .DataOutput(JRAddrSh2_wire)
+);
+
+Adder32bits
+JRAddr_4
+(
+	.Data0(PC_4_wire),
+	.Data1(JRAddrSh2_wire),
+
+	.Result(JRToPC_wire)
+);
+
+
+//-o-o-o-o-o-o-o-MULTIPLEXER-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 
 Multiplexer2to1
 #(
@@ -229,17 +247,13 @@ MUX_ForJumpRegister
 (
 	.Selector(JR_wire),
 	.MUX_Data0(JumpOrPC4OrBranch_wire),
-	.MUX_Data1(ReadData1_wire),
+	.MUX_Data1(JRToPC_wire),
 
 	.MUX_Output(JOrPC4OrBranchOrJR_wire)
 
 );
 
-//**********************/
-//**********************/
-//**********************/
-//**********************/
-//**********************/
+
 Multiplexer2to1
 #(
 	.NBits(5)
@@ -283,6 +297,11 @@ MUX_ForJalorRorIType
 );
 
 
+//**********************/
+//**********************/
+//**********************/
+//**********************/
+//**********************/
 
 RegisterFile
 Register_File
