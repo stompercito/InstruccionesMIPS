@@ -193,23 +193,6 @@ BranchAddr_4
 );
 
 //-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
-ShiftLeft2
-JRShifter
-(
-	 .DataInput(ReadData1_wire),
-   .DataOutput(JRAddrSh2_wire)
-);
-
-Adder32bits
-JRAddr_4
-(
-	.Data0(PC_4_wire),
-	.Data1(JRAddrSh2_wire),
-
-	.Result(JRToPC_wire)
-);
-
-
 //-o-o-o-o-o-o-o-MULTIPLEXER-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 
 Multiplexer2to1
@@ -249,12 +232,13 @@ MUX_ForJumpRegister
 (
 	.Selector(JR_wire),
 	.MUX_Data0(JumpOrPC4OrBranch_wire),
-	.MUX_Data1(JRToPC_wire),
+	.MUX_Data1(ReadData1_wire),
 
 	.MUX_Output(JOrPC4OrBranchOrJR_wire)
 
 );
 
+//-----------------------------
 
 Multiplexer2to1
 #(
@@ -298,6 +282,19 @@ MUX_ForJalorRorIType
 
 );
 
+Multiplexer2to1
+#(
+	.NBits(32)
+)
+MUX_MemtoReg
+(
+	.Selector(MemtoReg_wire),
+	.MUX_Data0(ALUResult_wire),
+	.MUX_Data1(MemOut_wire),
+
+	.MUX_Output(MemOrAlu_wire)
+
+);
 
 //**********************/
 //**********************/
@@ -371,7 +368,7 @@ SubstractToMemoryAddress
 (
 	.Data0(ReadData2_wire),
 	.Data1(32'hEFFF0000),
-	
+
 	.Result(MemoryAddressx4_wire)
 );
 
@@ -380,9 +377,9 @@ DivideMemoryAddress4
 (
 	.A(MemoryAddressx4_wire),
 	.B(4),
-	
+
 	.C(MemoryAddress_wire)
-)
+);
 
 
 DataMemory
@@ -400,19 +397,6 @@ Memory
 	.ReadData(MemOut_wire)
 );
 
-Multiplexer2to1
-#(
-	.NBits(32)
-)
-MUX_MemtoReg
-(
-	.Selector(MemtoReg_wire),
-	.MUX_Data0(ALUResult_wire),
-	.MUX_Data1(MemOut_wire),
-
-	.MUX_Output(MemOrAlu_wire)
-
-);
 
 assign ALUResultOut = ALUResult_wire;
 
