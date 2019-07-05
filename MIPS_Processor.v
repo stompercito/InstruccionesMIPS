@@ -62,10 +62,12 @@ wire [31:0] InmmediateExtendAnded_wire;
 wire [31:0] JumpOrPC4OrBranch_wire;
 wire [31:0] BranchOrPC4_wire;
 wire [31:0] JumpAddrSh2_wire; //Jump address shifted 2 bits
+wire [31:0] JRAddrSh2_wire; //Jump address shifted 2 bits
 wire [31:0] BranchAddrSh2_wire;	//Branch address shifted 2 bits
 wire [31:0] JAL_Address_or_ALU_Result_wire;
 wire [31:0] JumpAddr;
 wire [31:0] BranchToPC_wire;
+wire [31:0] JRToPC_wire;
 wire [31:0] MemOut_wire;
 wire [31:0] MemOrAlu_wire;
 wire [31:0] LinkOrWord_wire;
@@ -193,6 +195,16 @@ BranchAddr_4
 );
 
 //-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
+
+Adder32bits
+JRAddr_4
+(
+	.Data0(ReadData1_wire),
+	.Data1(4),
+
+	.Result(JRToPC_wire)
+);
+
 //-o-o-o-o-o-o-o-MULTIPLEXER-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 
 Multiplexer2to1
@@ -228,11 +240,11 @@ Multiplexer2to1
 #(
 	.NBits(32)
 )
-MUX_ForJumpRegister
+MUX_ForJR
 (
 	.Selector(JR_wire),
 	.MUX_Data0(JumpOrPC4OrBranch_wire),
-	.MUX_Data1(ReadData1_wire),
+	.MUX_Data1(JRToPC_wire),
 
 	.MUX_Output(JOrPC4OrBranchOrJR_wire)
 

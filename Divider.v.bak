@@ -1,5 +1,5 @@
 
-module Adder32bits
+module Divider
 #
 (
 	parameter NBits=32
@@ -7,7 +7,7 @@ module Adder32bits
 (
 	input [NBits-1:0] A,
 	input [NBits-1:0] B,
-	
+
 	output [NBits-1:0] C
 );
 
