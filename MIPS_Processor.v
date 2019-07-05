@@ -369,7 +369,7 @@ Arithmetic_Logic_Unit
 Adder32bits
 SubstractToMemoryAddress
 (
-	.Data0(ReadData2_wire),
+	.Data0(ReadData1_wire),
 	.Data1(32'hEFFF0000),
 	
 	.Result(MemoryAddressx4_wire)
@@ -382,7 +382,7 @@ DivideMemoryAddress4
 	.B(4),
 	
 	.C(MemoryAddress_wire)
-)
+);
 
 
 DataMemory
