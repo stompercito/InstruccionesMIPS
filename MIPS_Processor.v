@@ -166,7 +166,7 @@ JumpShifter
 Adder32bits
 JumpAddr_4
 (
-	.Data0(32'hFFC00000), //complemento a 2 de 00400000 para 
+	.Data0(32'hFFC00000), //complemento a 2 de 00400000 para
 	.Data1({PC_4_wire[31:28], JumpAddrSh2_wire[27:0]}),
 
 	.Result(JumpAddr)
@@ -177,7 +177,7 @@ JumpAddr_4
 ShiftLeft2
 BranchShifter
 (
-	 .DataInput({6'b0,InmmediateExtend_wire[15:0]}),  ////{6'b0,InmmediateExtend_wire[15:0]
+	 .DataInput(InmmediateExtend_wire),  ////{6'b0,InmmediateExtend_wire[15:0]
    .DataOutput(BranchAddrSh2_wire)
 );
 
@@ -185,7 +185,7 @@ Adder32bits
 BranchAddr_4
 (
 	.Data0(PC_4_wire),
-	.Data1({PC_4_wire[31:28], BranchAddrSh2_wire[27:0]}),
+	.Data1(BranchAddrSh2_wire),
 
 	.Result(BranchToPC_wire)
 );
