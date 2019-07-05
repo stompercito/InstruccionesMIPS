@@ -196,15 +196,6 @@ BranchAddr_4
 
 //-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 
-Adder32bits
-JRAddr_4
-(
-	.Data0(ReadData1_wire),
-	.Data1(4),
-
-	.Result(JRToPC_wire)
-);
-
 //-o-o-o-o-o-o-o-MULTIPLEXER-o-o-o-o-o-o-o-o-o-o-o-o-o-o
 
 Multiplexer2to1
@@ -244,7 +235,7 @@ MUX_ForJR
 (
 	.Selector(JR_wire),
 	.MUX_Data0(JumpOrPC4OrBranch_wire),
-	.MUX_Data1(JRToPC_wire),
+	.MUX_Data1(ReadData1_wire),
 
 	.MUX_Output(JOrPC4OrBranchOrJR_wire)
 
