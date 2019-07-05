@@ -69,6 +69,8 @@ wire [31:0] BranchToPC_wire;
 wire [31:0] MemOut_wire;
 wire [31:0] MemOrAlu_wire;
 wire [31:0] LinkOrWord_wire;
+wire [31:0] MemoryAddress_wire;
+wire [31:0] MemoryAddressx4_wire;
 integer ALUStatus;
 
 
@@ -345,15 +347,34 @@ Arithmetic_Logic_Unit
 	.ALUResult(ALUResult_wire)
 );
 
+Adder32bits
+SubstractToMemoryAddress
+(
+	.Data0(ReadData2_wire),
+	.Data1(32'hEFFF0000),
+	
+	.Result(MemoryAddressx4_wire)
+);
+
+Divider
+DivideMemoryAddress4
+(
+	.A(MemoryAddressx4_wire),
+	.B(4),
+	
+	.C(MemoryAddress_wire)
+)
+
 
 DataMemory
 #(
-	.DATA_WIDTH(32)
+	.DATA_WIDTH(32),
+	.MEMORY_DEPTH(1024)
 )
 Memory
 (
 	.WriteData(ReadData2_wire),
-	.Address(ALUResult_wire),
+	.Address(MemoryAddress_wire),
 	.MemWrite(MemWrite_wire),
 	.MemRead(MemRead_wire),
 	.clk(clk),
