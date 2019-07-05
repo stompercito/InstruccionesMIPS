@@ -274,7 +274,7 @@ MUX_JAL_address_Or_ALU_Result
 (
 	.Selector(Jump_wire),
 	.MUX_Data0(MemOrAlu_wire),
-	.MUX_Data1(JumpAddr),
+	.MUX_Data1(PC_4_wire),
 
 	.MUX_Output(JAL_Address_or_ALU_Result_wire)
 
