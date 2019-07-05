@@ -1,5 +1,5 @@
 
-module Divider
+module Adder32bits
 #
 (
 	parameter NBits=32
