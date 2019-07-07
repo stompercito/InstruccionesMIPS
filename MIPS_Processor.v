@@ -112,6 +112,8 @@ Control
 ControlUnit
 (
 	.OP(Instruction_wire[31:26]),
+	.ALUFunction(Instruction_wire[5:0]),
+	.JR(JR_wire),
 	.RegDst(RegDst_wire),
 	.BranchNE(BranchNE_wire),
 	.BranchEQ(BranchEQ_wire),
@@ -349,8 +351,7 @@ ArithmeticLogicUnitControl
 (
 	.ALUOp(ALUOp_wire),
 	.ALUFunction(Instruction_wire[5:0]),
-	.ALUOperation(ALUOperation_wire),
-	.JR(JR_wire)
+	.ALUOperation(ALUOperation_wire)
 );
 
 

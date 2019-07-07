@@ -14,6 +14,8 @@
 module Control
 (
 	input [5:0]OP,
+	input [5:0] ALUFunction,
+	output JR,
 	output Jump,
 	output RegDst,
 	output BranchEQ,
@@ -36,6 +38,7 @@ localparam I_Type_SW = 6'h2b;
 localparam J_Type_J	= 6'h02;
 localparam J_Type_JAL	= 6'h03;
 localparam I_Type_LUI = 6'h0f;
+localparam R_Type_JR	= 10'b0111_001000;
 
 reg [12:0] ControlValues;
 
@@ -57,6 +60,7 @@ always@(OP) begin
 		endcase
 end
 
+
 assign Jump = ControlValues[12];
 assign RegDst = ControlValues[11];
 assign ALUSrc = ControlValues[10];
@@ -68,6 +72,11 @@ assign BranchNE = ControlValues[5];
 assign BranchEQ = ControlValues[4];
 assign ALUOp = ControlValues[3:0];
 
+wire [9:0] Selector;
+
+assign Selector = {ALUOp, ALUFunction};
+
+assign 	JR = (Selector == R_Type_JR) ? 1'b1 : 1'b0;
 
 endmodule
 //control//
