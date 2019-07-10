@@ -14,19 +14,20 @@
 
 module MIPS_Processor_TB;
 reg clk = 0;
-reg reset = 0; 
-reg [7:0] PortIn; 
-wire [31:0] ALUResultOut;  
+reg reset = 0;
+reg [7:0] PortIn;
+wire [31:0] ALUResultOut;
 wire [31:0] PortOut;
-  
-  
+
+
 MIPS_Processor
 DUV
 (
 	.clk(clk),
 	.reset(reset),
 	.ALUResultOut(ALUResultOut),
-	.PortOut(PortOut)
+	.PortOut(PortOut),
+  .PortIn(PortIn)
 
 );
 /*********************************************************/

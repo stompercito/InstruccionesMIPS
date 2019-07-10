@@ -10,7 +10,7 @@
 
 module MIPS_Processor
 #(
-	parameter MEMORY_DEPTH = 32
+	parameter MEMORY_DEPTH = 64
 )
 
 (
@@ -388,7 +388,7 @@ DivideMemoryAddress4
 DataMemory
 #(
 	.DATA_WIDTH(32),
-	.MEMORY_DEPTH(1024)
+	.MEMORY_DEPTH(2048)
 )
 Memory
 (
