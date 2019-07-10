@@ -18,15 +18,15 @@ module Register
 	input reset,
 	input enable,
 	input  [N-1:0] DataInput,
-	
-	
+
+
 	output reg [N-1:0] DataOutput
 );
 
 always@(negedge reset or posedge clk) begin
 	if(reset==0)
 		DataOutput <= 0;
-	else	
+	else
 		if(enable==1)
 			DataOutput<=DataInput;
 end
