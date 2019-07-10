@@ -51,7 +51,7 @@ always@(OP) begin
 		I_Type_SW: 				ControlValues= 13'b00_100_01_00_0011;
 		I_Type_LUI:				ControlValues= 13'b00_101_00_00_1000;
 		J_Type_J:					ControlValues= 13'b10_000_00_00_0000;
-		J_Type_JAL:					ControlValues= 13'b10_001_00_00_0000;
+		J_Type_JAL:				ControlValues= 13'b10_001_00_00_0000;
 		default:
 			ControlValues= 13'b000000000000;
 		endcase
