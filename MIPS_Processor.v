@@ -375,14 +375,8 @@ SubstractToMemoryAddress
 	.Result(MemoryAddressx4_wire)
 );
 
-Divider
-DivideMemoryAddress4
-(
-	.A(MemoryAddressx4_wire),
-	.B(4),
+assign MemoryAddress_wire = {1'b0, 1'b0, MemoryAddressx4_wire[31:2]};
 
-	.C(MemoryAddress_wire)
-);
 
 
 DataMemory
